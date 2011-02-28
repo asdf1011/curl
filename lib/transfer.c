@@ -1027,7 +1027,9 @@ CURLcode Curl_readwrite(struct connectdata *conn,
   }
 
   /* If we still have writing to do, we check if we have a writable socket. */
-  if((k->keepon & KEEP_SEND) && (select_res & CURL_CSELECT_OUT)) {
+  if((k->keepon & KEEP_SEND) &&
+        (conn->waitfor && (conn->waitfor & (CURL_CSELECT_IN | CURL_CSELECT_OUT)) ||
+        (select_res & CURL_CSELECT_OUT))) {
     /* write */
 
     result = readwrite_upload(data, conn, k, &didwhat);
